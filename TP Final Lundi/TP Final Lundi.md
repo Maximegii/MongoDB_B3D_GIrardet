@@ -229,5 +229,150 @@ db.livres.find({annee_publication: {$gt: 2000}})
 
 ![livre emprunté](image-6.png)
 
+## Partie 3 : Mise à jour de documents (update)
+
+### 1 
+![Update le titre d'un livre](image-7.png)
+
+### 2 
+
+````sh
+db.livres.updateMany(
+  {},
+  {
+    $set: { stock: 10 }
+  }
+)
+````
+
+### 3 
+
+![changer disponnibilité](image-8.png)
+
+### 4 
+
+````sh
+db.utilisateurs.updateOne(
+  { email: "marie.dupont@example.com" },
+  { 
+    $push: { 
+      livres_empruntes: {
+        livre_id: ObjectId('67c5ca7900fc8c960af3c509'), 
+        titre: "1984",
+        date_emprunt: new Date("2025-03-05"),
+        date_retour_prevue: new Date("2025-04-05")
+      }
+    }
+  }
+)
+````
+résultat dans la table utilisateur 
+
+![Marie dupont](image-9.png)
+
+### 5 
+
+Requête :
+
+![Requete changement d'adresse](image-10.png)
+
+Resultat: 
+
+![Resultat changement d'adresse](image-11.png)
+
+### 6 
+
+````sh 
+db.utilisateurs.updateOne(
+  { email: "sophie.lefevre@example.com" }, 
+  { 
+    $addToSet: { tags: "nouveau_tag" } 
+  }
+)
+````
+
+### 7 
+
+````sh
+db.livres.updateOne(
+  { titre: "Harry Potter à l'école des sorciers" }, 
+  { 
+    $set: { note_moyenne: 4.95 } 
+  }
+)
+````
+
+## Partie 5 : Requêtes avancées et projection
+
+### 1 
+
+![Liste note decroissant](image-12.png)
+
+### 2 
+
+![3 livre les plus anciens](image-13.png)
+
+### 3 
+
+![Nombre de livre par auteur](image-14.png)
+
+### 4 
+
+![Afficher livre sans id](image-15.png)
+
+### 5 
+
+![Utilisateurs ayant emprunté plus d'un livre](image-16.png)
+
+### 6 
+
+![Recherche dans le titre](image-17.png)
+
+
+### 7 
+
+![Prix entre 10€ et 20€](image-18.png)
+
+## Partie 6 : Modélisation de données 
+
+### 1 & 2 
+
+J'ai créer la collection avec ces emprunts comme ceci :
+
+![Creation collection + emprunt](image-19.png)
+
+### Reflexion sur la modélisation
+
+### 1 
+
+La méthode ou les emprunts sont stockés avec les données utilisateurs est plus simple voici ces avantages :
+
+- Accès rapide aux emprunts lors de la consultation des données utilisateurs
+- Simplicité de mise en place
+
+Mais elle comporte les incovéniants suivants : 
+
+- Taille des documents par utilisateurs plus lourdes
+- Obligation de passer par le documents utilisateurs pour modifier un emprunt
+
+La méthode avec une table emprunt est plus complexe mais comporte les avantages suivant :
+
+- Document utilisateur plus petit 
+- modularités des emprunts sans toucher aux utilisateurs
+
+Voici ces inconvéniants: 
+- Il faut mettre en place des jointures entre l'utilisateurs, le livre emprunté et l'emprunt 
+
+### 2 
+
+Pour une application réelle je privilégierais la méthodes avec une table emprunt a part car elle permet une meilleur getion des données et de moins se perdre ou d'éviter les requêtes trop lourdes 
+
+### 3 
+
+Il faudrait un id pour chacun des exemplaires (examplaire_id)
+
+
+
+
 
 
